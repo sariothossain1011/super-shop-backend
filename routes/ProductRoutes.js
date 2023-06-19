@@ -7,6 +7,7 @@ const router = express.Router()
 
 
 
+
 router.post("/addProduct",Authentication,formidable(),addProduct);
 router.get("/productPhoto/:id",productPhoto)
 router.get("/findProduct/:id" ,findProduct)

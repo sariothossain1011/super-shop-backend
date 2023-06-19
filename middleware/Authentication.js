@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+
+
 const Authentication = async (req, res, next) => {
   try {
     let tmp = req.header("Authorization");
@@ -7,18 +9,21 @@ const Authentication = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({ message: "Not authorized, please login" });
+      // return res.status(500).json({ status: "fail", data: error.toString() });
     }
 
     jwt.verify(token, process.env.SECRET_KEY, (error, decode) => {
       if (error) {
-        return res.status(400).json({ message: "Not authorized, please login" });
+        // return res.status(400).json({ message: "Not authorized, please login" });
+        return res.status(500).json({ status: "fail", data: error.toString() });
       } else {
         req.userId = decode['data'];
+        console.log(req.userId)
         next();
       }
     });
   } catch (error) {
-    return res.status(400).json({ message: "something went wrong" });
+    return res.status(500).json({ status: "fail", data: error.toString() });
   }
 };
 

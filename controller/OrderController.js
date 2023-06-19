@@ -6,13 +6,13 @@ const sgMail = require("@sendgrid/mail");
 
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
-
 const gateway = new braintree.BraintreeGateway({
   environment: braintree.Environment.Sandbox,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
+
 
 
 exports.getOrders = async (req, res) => {
@@ -25,8 +25,6 @@ exports.getOrders = async (req, res) => {
     return res.status(500).json({ status: "fail", data: error.toString() });
   }
 };
-
-
 
 exports.allOrders = async (req, res) => {
   try {
@@ -44,7 +42,7 @@ exports.getToken = async (req, res) => {
   try {
     gateway.clientToken.generate({}, function (error, response) {
       if (error) {
-        res.status(500).json({ status: "fail", data: error.toString() });
+        res.status(400).json({ status: "fail", data: error.toString() });
       } else {
         res.status(200).json({ status: "success", data: response });
       }
@@ -53,10 +51,6 @@ exports.getToken = async (req, res) => {
     res.status(500).json({ status: "fail", data: error.toString() });
   }
 };
-
-
-
-
 
 exports.processPayment = async (req, res) => {
   try {
@@ -94,26 +88,6 @@ exports.processPayment = async (req, res) => {
   }
 };
 
-
-
-// const decrementQuantity = async (cart) => {
-//   try {
-//     // build mongodb query
-//     const bulkOps = cart.map((item) => {
-//       return {
-//         updateOne: {
-//           filter: { _id: item._id },
-//           update: { $inc: { quantity: -0, sold: +1 } },
-//         },
-//       };
-//     });
-//     const updated = await Product.bulkWrite(bulkOps, {});
-//     console.log("blk updated", updated);
-//   } catch (error) {
-//     res.status(500).json({ status: "fail", data: error.toString() });
-//   }
-// };
-
 const decrementQuantity = async (cart) => {
   try {
     // build mongodb query
@@ -132,9 +106,6 @@ const decrementQuantity = async (cart) => {
     console.log(error);
   }
 };
-
-
-
 
 exports.orderStatus = async (req, res) => {
   try {

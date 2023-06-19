@@ -106,40 +106,56 @@ exports.findUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const { name, password } = req.body;
+    const { address } = req.body;
     const data = await UserModel.findById(req.userId);
-    
-   
-    // check password length
-    if (password && password.length < 6) {
-      return res.json({
-        error: "Password is required and should be min 6 characters long",
-      });
-    }
-    // hash the password
-    const hashPassword = await HashPassword(password);
 
     const updatedData = await UserModel.findByIdAndUpdate(
       req.userId,
       {
-        name: name || data.name,
-        password: hashPassword || data.password,
-        
+        address: address || user.address,
       },
-      { new: true } 
+      { new: true }
     );
 
     if (!updatedData) {
-      res.status(400).json({ status: "fail", message: "update fail" });
+      return res.status(400).json({ status: "fail", message: "update fail" });
     }
 
     const { password: removedPassword, ...responseData } = updatedData.toObject();
 
-    res.status(200).json({ status: "success", data: responseData });
+    return res.status(200).json({ status: "success", data: responseData });
   } catch (error) {
-    res.status(400).json({ status: "fail", data: error.toString() });
+    return res.status(400).json({ status: "fail", data: error.toString() });
   }
 };
+
+
+
+// exports.updateUser = async (req, res) => {
+//   try {
+//     const {address} = req.body;
+//     const data = await UserModel.findById(req.userId);
+
+//     const updatedData = await UserModel.findByIdAndUpdate(
+//       req.userId,
+//       {
+//         address: address || user.address,
+        
+//       },
+//       { new: true } 
+//     );
+
+//     if (!updatedData) {
+//       res.status(400).json({ status: "fail", message: "update fail" });
+//     }
+
+//     const { password: removedPassword, ...responseData } = updatedData.toObject();
+
+//     res.status(200).json({ status: "success", data: responseData });
+//   } catch (error) {
+//     res.status(400).json({ status: "fail", data: error.toString() });
+//   }
+// };
 
 exports.deleteUser = async (req, res) => {
   const data = await deleteService(req, UserModel);

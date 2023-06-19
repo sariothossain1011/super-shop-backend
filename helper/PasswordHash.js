@@ -2,7 +2,7 @@ const bcrypt =require("bcrypt");
 
 exports.HashPassword = (password) => {
   return new Promise((resolve, reject) => {
-    bcrypt.genSalt(12, (err, salt) => {
+    bcrypt.genSalt(10, (err, salt) => {
       if (err) {
         reject(err);
       }
